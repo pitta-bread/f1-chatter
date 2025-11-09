@@ -44,7 +44,7 @@ information at any given time, but also so that API usage is efficient, and so m
 frontend instances can be used to show the same information to multiple users, all using
 one backend instance.
 - During a live session, the backend "polls" for the latest messages and data, once
-every 30 seconds.
+every 30 seconds. Failed polls are logged but do not bring down the application.
 
 ### AI Chat Sidepanel
 
@@ -60,12 +60,13 @@ for their chat.
 - Python Django Backend
   - Local sqlite database
   - Django Ninja to define, document and serve the API
-  - Custom management commands to populate the database with data from the OpenF1 API
-  and Discord Message Fetcher
+  - Custom management commands to populate the database with data from FastF1 and
+  Discord Message Fetcher
 - Svelte Frontend
-- OpenF1 API (data source for extra information like driver info, track info, session
-  times, etc.)
+- FastF1 Python package (data source for driver info, track info, session times,
+  driver telemetry with x,y positions, etc.)
 - Discord Message Fetcher (to get the radio messages from the Discord channel)
+- LLM API (for filtering messages to find the most interesting ones)
 
 ### Running the app (locally deployed)
 
@@ -76,8 +77,9 @@ are missing. The exception to this is uv (python), which is a required prerequis
 
 ### Phase 1: Sessions
 
-1. A management command that populates our database with all session info from OpenF1,
-as per the next part.
+1. A management command that populates our database with all session info from FastF1.
+   Sessions are detected by comparing current time with FastF1-provided UTC start and end
+   times for each session.
 2. A Django Ninja endpoint that, to an API user, lists all the current year's (season's)
 available sessions. It must include start and end time of a session, and a session_id
 which is unique to the session.
@@ -91,7 +93,8 @@ session_id, or for a time period by start and end timestamps (iso format).
 few parameters, to make it easy to fetch and update the database with the latest
 messages. This will need to custom parse and ingest the JSON data.
 3. Add in to the start script the automation of this, running it once every 30 seconds
-in an endless loop, with error handling so it never brings the whole stack down.
+in an endless loop, with error handling so it never brings the whole stack down. Failed
+polls must be logged.
 4. Then add an endpoint for latest_state, that allows a future frontend to get the data
 it needs for the most recent 30 second period. It would return the `highlight_message`
 so the frontend knows which driver on track to show a message against. The highlight
@@ -102,14 +105,16 @@ is hardcoded to be simply the latest session. The only interactive element is th
 that latest_state is being polled, and when it chanes its response, the frontend nicely
 highlights the new highlight messsage and driver.
 
-### Phase 3: Enriching with real data fetched live from OpenF1
+### Phase 3: Enriching with real data fetched live from FastF1
 
-- Driver info isn't hardcoded into the frontend.
+- Driver info isn't hardcoded into the frontend, fetched from FastF1 instead.
 - Instead of icon, when a driver is highlighted, their headshot shows.
+- Driver positions on the track map use real-time x,y telemetry data from FastF1.
 
 ### Phase 4: AI
 
 - Filtering of the messages so the highlight message for a time period is actually the
-most interesting.
+most interesting. This is done by prompting an LLM with a custom definition of what
+makes a message interesting.
 - Sentiment analysis on each message, so a happy/neutral/sad face emoji can show next
 to the message.
