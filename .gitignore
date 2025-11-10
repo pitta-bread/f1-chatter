@@ -210,3 +210,6 @@ __marimo__/
 
 # data directories
 tmp_transcripts_from_discord/
+discord_msg_fetcher/
+.fastf1_cache/
+.fastf1_cache/fastf1_http_cache.sqlite

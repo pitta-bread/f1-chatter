@@ -86,7 +86,9 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+        ),
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -121,3 +123,42 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "console": {
+            "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "console",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "django.request": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "f1_data": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "gunicorn.access": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "gunicorn.error": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}

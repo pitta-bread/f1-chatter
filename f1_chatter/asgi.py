@@ -8,9 +8,14 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
 import os
+from pathlib import Path
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'f1_chatter.settings')
+from f1_chatter.env import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "f1_chatter.settings")
 
 application = get_asgi_application()

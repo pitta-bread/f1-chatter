@@ -4,32 +4,50 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Session',
+            name="Session",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('session_id', models.CharField(db_index=True, max_length=50, unique=True)),
-                ('year', models.IntegerField()),
-                ('round_number', models.IntegerField()),
-                ('session_type', models.CharField(max_length=20)),
-                ('start_time', models.DateTimeField()),
-                ('end_time', models.DateTimeField()),
-                ('event_name', models.CharField(max_length=200)),
-                ('location', models.CharField(max_length=200)),
-                ('country', models.CharField(max_length=100)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "session_id",
+                    models.CharField(db_index=True, max_length=50, unique=True),
+                ),
+                ("year", models.IntegerField()),
+                ("round_number", models.IntegerField()),
+                ("session_type", models.CharField(max_length=20)),
+                ("start_time", models.DateTimeField()),
+                ("end_time", models.DateTimeField()),
+                ("event_name", models.CharField(max_length=200)),
+                ("location", models.CharField(max_length=200)),
+                ("country", models.CharField(max_length=100)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'ordering': ['-year', 'round_number', 'session_type'],
-                'indexes': [models.Index(fields=['year', 'round_number'], name='f1_data_ses_year_a273d2_idx'), models.Index(fields=['start_time', 'end_time'], name='f1_data_ses_start_t_e914ef_idx')],
+                "ordering": ["-year", "round_number", "session_type"],
+                "indexes": [
+                    models.Index(
+                        fields=["year", "round_number"],
+                        name="f1_data_ses_year_a273d2_idx",
+                    ),
+                    models.Index(
+                        fields=["start_time", "end_time"],
+                        name="f1_data_ses_start_t_e914ef_idx",
+                    ),
+                ],
             },
         ),
     ]
